@@ -1,6 +1,8 @@
 import { Observation } from "../types";
 
-export const calculateBounds = (observations: Observation[]) => {
+export const calculateFlightPathBounds = (
+  observations: Observation[]
+): [[number, number], [number, number]] => {
   const lngs = observations
     .map((o) => o.longitude)
     .filter((lng): lng is number => typeof lng === "number" && !isNaN(lng));
@@ -13,10 +15,10 @@ export const calculateBounds = (observations: Observation[]) => {
   ];
 };
 
-export const addFlightPath = (
+export const addDroneFlightPath = (
   map: mapboxgl.Map,
   observations: Observation[]
-) => {
+): void => {
   const pathGeoJSON: GeoJSON.Feature<GeoJSON.LineString> = {
     type: "Feature",
     geometry: {
@@ -48,8 +50,10 @@ export const addFlightPath = (
   });
 };
 
-export const calculateInitialCoordinates = (observations: Observation[]) => {
-  const bounds = calculateBounds(observations);
+export const calculateInitialVideoCoordinates = (
+  observations: Observation[]
+): [[number, number], [number, number], [number, number], [number, number]] => {
+  const bounds = calculateFlightPathBounds(observations);
   const center: [number, number] = [
     (bounds[0][0] + bounds[1][0]) / 2,
     (bounds[0][1] + bounds[1][1]) / 2,
